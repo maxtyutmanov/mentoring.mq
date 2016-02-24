@@ -6,7 +6,6 @@ import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
-import java.util.Observer;
 
 public class PollFsEventsJob implements Runnable {
 
@@ -44,6 +43,7 @@ public class PollFsEventsJob implements Runnable {
 			while (!Thread.currentThread().isInterrupted()) {
 				pollWatchService();
 			}
+			System.out.println("Exiting the poll job");
 		}
 		catch (InterruptedException e) {
 			//TODO: log
@@ -52,22 +52,36 @@ public class PollFsEventsJob implements Runnable {
 	}
 	
 	private void pollWatchService() throws InterruptedException {
-		WatchKey key = this._watchService.take();
-			
-		for (WatchEvent<?> event: key.pollEvents()) {
-			WatchEvent.Kind kind = event.kind();
-			
-			if (kind == StandardWatchEventKinds.OVERFLOW) {
-                continue;
-            }
-			
-			WatchEvent<Path> eventAs = (WatchEvent<Path>)event;
-			Path relativePath = eventAs.context();
-			Path absolutePath = _pathToWatch.resolve(relativePath);
-			
-			boolean isRegularFile = Files.isRegularFile(absolutePath);
-			if (isRegularFile) {
-				onFileCreated(absolutePath);
+		WatchKey key = null;
+		
+		try {
+			key = this._watchService.take();
+			System.out.println("Got the events for path!");
+				
+			for (WatchEvent<?> event: key.pollEvents()) {
+				WatchEvent.Kind kind = event.kind();
+				System.out.println("Looping through events list");
+				
+				if (kind == StandardWatchEventKinds.OVERFLOW) {
+	                continue;
+	            }
+				
+				WatchEvent<Path> eventAs = (WatchEvent<Path>)event;
+				Path relativePath = eventAs.context();
+				Path absolutePath = _pathToWatch.resolve(relativePath);
+				
+				System.out.println("File found" + absolutePath.toString());
+				
+				boolean isRegularFile = Files.isRegularFile(absolutePath);
+				if (isRegularFile) {
+					System.out.println("Regular file found" + absolutePath.toString());
+					onFileCreated(absolutePath);
+				}
+			}
+		}
+		finally {
+			if (key != null) {
+				key.reset();
 			}
 		}
 	}

@@ -58,12 +58,14 @@ public class ReadFileContentsJob implements Runnable {
 	
 	private void pollQueueForPath() throws InterruptedException {
 		Path path = _pathsToProcess.take();
+		System.out.println("got the file from processing queue: " + path.toString());
 		
 		int numberOfRetries = 0;
 		
 		while (true) {
 			if (++numberOfRetries >= MAX_NUMBER_OF_RETRIES) {
 				//file is unavailable for too long. Give up on it.
+				System.out.println("Too many attempts were made to read file contents: " + path.toString());
 				//TODO: log
 				break;
 			}
@@ -76,6 +78,7 @@ public class ReadFileContentsJob implements Runnable {
 			}
 			catch (FileNotFoundException fnfe) {
 				//file has already been deleted. Give up on it.
+				System.out.println("Cannot find the file taken from processing queue: " + path.toString());
 				//TODO: log
 				break;
 			}

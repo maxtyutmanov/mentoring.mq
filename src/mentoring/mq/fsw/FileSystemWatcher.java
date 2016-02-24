@@ -55,6 +55,22 @@ public class FileSystemWatcher implements Closeable {
 			_watchKey.cancel();
 		}
 		
+		_fsEventsPoller.interrupt();
+		try
+		{
+			_fsEventsPoller.join();
+		}
+		catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		_fileContentsReader.interrupt();
+		try {
+			_fileContentsReader.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
 		if (_watchService != null) {
 			_watchService.close();
 		}
