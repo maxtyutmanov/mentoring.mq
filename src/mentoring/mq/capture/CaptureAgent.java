@@ -11,10 +11,10 @@ import mentoring.mq.fsw.FileSystemWatcher;
 
 public class CaptureAgent implements java.io.Closeable {
 	private FileSystemWatcher _watcher = null;
-	private final JmsAdapter _jmsAdapter;
+	private final JmsSender _jmsAdapter;
 	
 	public CaptureAgent() throws JMSException {
-		_jmsAdapter = new JmsAdapter();
+		_jmsAdapter = new JmsSender();
 	}
 	
 	public void start(Path dirToCapture) throws IOException {

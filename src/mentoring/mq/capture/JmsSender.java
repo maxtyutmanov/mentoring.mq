@@ -14,13 +14,13 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 
 import mentoring.mq.fsw.FileContents;
 
-public class JmsAdapter implements java.io.Closeable {
+public class JmsSender implements java.io.Closeable {
 	private final String PROCESSING_QUEUE_NAME = "MENTORING.MQ.PROCESSING_QUEUE";
 	
 	private final ConnectionFactory _factory;
 	private final Connection _connection;
 	
-	public JmsAdapter() throws JMSException {
+	public JmsSender() throws JMSException {
 		String user = "admin";
         String password = "password";
         String host = "localhost";
@@ -28,6 +28,7 @@ public class JmsAdapter implements java.io.Closeable {
 		
 		_factory = new ActiveMQConnectionFactory("tcp://" + host + ":" + String.valueOf(port));
 		_connection = _factory.createConnection(user, password);
+		_connection.start();
 	}
 	
 	public void sendFileToProcessing(FileContents file) throws JMSException {

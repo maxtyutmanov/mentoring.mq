@@ -47,7 +47,7 @@ public class PollFsEventsJob implements Runnable {
 		}
 		catch (InterruptedException e) {
 			//TODO: log
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 	}
 	
