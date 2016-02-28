@@ -12,5 +12,8 @@ public class ProcessingProgram {
 		System.out.println("Receiver is up and ready to process messages...");
 		
 		System.in.read();
+		
+		receiver.stop();
+		receiver.close();
 	}
 }

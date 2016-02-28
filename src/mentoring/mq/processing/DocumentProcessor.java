@@ -1,7 +1,6 @@
 package mentoring.mq.processing;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -10,9 +9,6 @@ import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageListener;
-import javax.jms.ObjectMessage;
-
-import mentoring.mq.fsw.FileContents;
 
 public class DocumentProcessor implements MessageListener {
 	

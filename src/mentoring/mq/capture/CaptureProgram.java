@@ -1,9 +1,6 @@
 package mentoring.mq.capture;
 import java.nio.file.Paths;
 
-import javax.jms.*;
-import org.apache.activemq.ActiveMQConnectionFactory;
-
 public class CaptureProgram {
 	public static void main(String[] args) throws Exception {
 		CaptureAgent ca = new CaptureAgent();
