@@ -19,5 +19,7 @@ public class CaptureProgram {
 		ca.stop();
 		
 		System.out.println("Capture agent has successfully been interrupted");
+		
+		ca.close();
 	}
 }

@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import javax.jms.JMSException;
+import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
@@ -25,39 +26,31 @@ public class DocumentProcessor implements MessageListener {
 	public void onMessage(Message msg) {
 		System.out.println("Got the message from broker!");
 		
-		if (msg instanceof ObjectMessage) {
-			ObjectMessage msgAs = (ObjectMessage)msg;
+		if (msg instanceof MapMessage) {
+			MapMessage msgAs = (MapMessage)msg;
 			
-			Serializable obj;
 			try {
-				obj = msgAs.getObject();
+				String filePath = msgAs.getString("filepath");
+				byte[] contents = msgAs.getBytes("contents");
 				
-				if (obj instanceof FileContents) {
-					FileContents objAs = (FileContents)obj;
-					sendToStorage(objAs);
-				}
-				else {
-					System.out.println("Could not cast object within the message to FileContents object");
-				}
-				
+				sendToStorage(filePath, contents);
 			} catch (JMSException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 		else {
-			System.out.println("Could not cast input message to ObjectMessage");
+			System.out.println("Could not cast input message to MapMessage");
 		}
 	}
 	
-	private void sendToStorage(FileContents fileContents) {
-		Path remotePath = Paths.get(fileContents.getPath());
+	private void sendToStorage(String remotePathStr, byte[] fileContents) {
+		Path remotePath = Paths.get(remotePathStr);
 		Path remoteFileName = remotePath.getFileName();
 		
 		Path targetPath = _storageDir.resolve(remoteFileName);
 		
 		try {
-			Files.write(targetPath, fileContents.getContents());
+			Files.write(targetPath, fileContents);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
