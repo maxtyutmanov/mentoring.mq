@@ -7,6 +7,7 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 
 import mentoring.mq.common.JmsAdapterBase;
+import mentoring.mq.common.ProcessedDocument;
 import mentoring.mq.fsw.FileContents;
 
 public class JmsSender extends JmsAdapterBase {
@@ -16,7 +17,7 @@ public class JmsSender extends JmsAdapterBase {
 		super();
 	}
 	
-	public void sendFileToProcessing(FileContents file) throws JMSException {
+	public void sendFileToProcessing(ProcessedDocument file) throws JMSException {
 		Session session = null;
 		MessageProducer producer = null;
 		
@@ -39,8 +40,8 @@ public class JmsSender extends JmsAdapterBase {
 		}
 	}
 	
-	private void fillMessage(MapMessage msg, FileContents payload) throws JMSException {
-		msg.setString("filepath", payload.getPath());
+	private void fillMessage(MapMessage msg, ProcessedDocument payload) throws JMSException {
+		msg.setString("filepath", payload.getRemoteFilePath());
 		msg.setBytes("contents", payload.getContents());
 	}
 }
